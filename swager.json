@@ -375,59 +375,10 @@
         }
       }
     },
-    "/users/water/rate": {
-      "patch": {
-        "tags": ["User"],
-        "summary": "Updates user`s water rate",
-        "parameters": [
-          {
-            "in": "header",
-            "name": "Authorization",
-            "required": true
-          }
-        ],
-        "security": [{ "Bearer": [] }],
-
-        "requestBody": {
-          "description": "User`s dayly water rate object",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateWaterRateRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successfull operation",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UpdateWaterRateResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "No token provided / Bad request (invalid request body)",
-            "content": {}
-          },
-          "401": {
-            "description": "Unauthorized (invalid access token)",
-            "content": {}
-          },
-          "404": {
-            "description": "Invalid user / Invalid session",
-            "content": {}
-          }
-        }
-      }
-    },
     "/water/notes": {
       "post": {
-        "tags": ["Water"],
-        "summary": "Creates user`s water`s note",
+        "tags": ["Category"],
+        "summary": "Creates user`s transactions category",
         "parameters": [
           {
             "in": "header",
@@ -437,11 +388,11 @@
         ],
         "security": [{ "Bearer": [] }],
         "requestBody": {
-          "description": "User`s drank water by one time object",
+          "description": "User`s transactions category object",
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateWaterNoteRequest"
+                "$ref": "#/components/schemas/CreateCategoryRequest"
               }
             }
           }
@@ -452,13 +403,13 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CreateWaterNoteResponse"
+                  "$ref": "#/components/schemas/CreateCategoryResponse"
                 }
               }
             }
           },
           "400": {
-            "description": "No token provided / Bad request (invalid request body)",
+            "description": "No token provided / Bad request (invalid request body) / Category already exists",
             "content": {}
           },
           "401": {
@@ -990,28 +941,45 @@
           }
         }
       },
-      "UpdateWaterRateRequest": {
-        "required": ["waterRate"],
+      "CreateCategoryRequest": {
+        "required": ["type", "name"],
         "type": "object",
         "properties": {
-          "waterRate": {
-            "type": "integer",
-            "description": "User`s new water dayli norm (ml)",
-            "min": 1,
-            "max": 15000,
-            "example": 2125
+          "type": {
+            "type": "string",
+            "description": "Transaction type",
+            "enum": ["incomes", "expences"],
+            "example": "incomes"
+          },
+          "name": {
+            "type": "string",
+            "description": "Category name",
+            "minLength": 2,
+            "maxLength": 16,
+            "example": "Salary"
           }
         }
       },
-      "UpdateWaterRateResponse": {
+      "CreateCategoryResponse": {
         "type": "object",
         "properties": {
-          "waterRate": {
-            "type": "integer",
-            "description": "User`s new water dayli norm (ml)",
-            "min": 1,
-            "max": 15000,
-            "example": 2125
+          "_id": {
+            "type": "string",
+            "description": "Category id",
+            "example": "6522bf1f9027bb7d55d6512b"
+          },
+          "type": {
+            "type": "string",
+            "description": "Transaction type",
+            "enum": ["incomes", "expences"],
+            "example": "incomes"
+          },
+          "name": {
+            "type": "string",
+            "description": "Category name",
+            "minLength": 2,
+            "maxLength": 16,
+            "example": "Salary"
           }
         }
       },

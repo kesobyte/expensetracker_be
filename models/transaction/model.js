@@ -2,7 +2,7 @@ const { categorySchema } = require("../category/model");
 const { regex, transactionSchema: constants } = require("../../constants");
 const { model } = require("mongoose");
 
-const transactionSchema = categorySchema.add({
+const transactionSchema = categorySchema.clone({
   date: {
     type: String,
     match: regex.DATE_REGEX,
