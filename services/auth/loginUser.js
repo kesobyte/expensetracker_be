@@ -4,16 +4,32 @@ const {
   tokenTools,
   separatesCategoriesByType,
 } = require("../../helpers");
-const { User, Session, Category, Transaction } = require("../../models");
-const {
-  transactionSchema: transactionSchemaConstants,
-} = require("../../constants");
+const { User, Session, Category } = require("../../models");
+// const {
+//   transactionSchema: transactionSchemaConstants,
+// } = require("../../constants");
 
-const { TRANSACTION_TYPE } = transactionSchemaConstants;
+// const { TRANSACTION_TYPE } = transactionSchemaConstants;
 
 const loginUser = async (body) => {
   try {
     const user = await User.findOne({ email: body.email });
+    await Session.deleteMany({ uid: user._id });
+    /* 
+    # resolve with aggregate
+    let user = await User.aggregate([
+      { $match: { email: body.email } },
+      {
+        $lookup: {
+          from: "category",
+          localField: "_id",
+          foreignField: "owner",
+          as: "qwe",
+        },
+      },
+    ]);
+    user = user[0]; 
+    */
 
     const isPasswordsCompare = user
       ? await passwordTools.compare(body.password, user.password)
@@ -36,19 +52,21 @@ const loginUser = async (body) => {
 
     const categories = separatesCategoriesByType(userCategories);
 
-    // const
-
-    //     const transactions = Transaction.aggregate([
-    //   {
-    //     $match: {
-    //       date: { $gt: prev, $lt: next },
-    //       owner: { $eq: _id },
-    //     },
-    //   },
-    // ]);
+    /* 
+    # resolve to transactions sum by current month
+    const transactions = Transaction.aggregate([
+      {
+        $match: {
+          date: { $gt: prev, $lt: next },
+          owner: { $eq: _id },
+        },
+      },
+    ]); 
+    */
 
     return {
       user: { _id, email, name, avatarUrl, categories, currency },
+      // user,
       sid,
       accessToken,
       refreshToken,

@@ -1,5 +1,8 @@
 const { createError } = require("../../helpers");
-const { createCategory } = require("../../models/category/validationSchemas");
+const {
+  createCategory,
+  updateCategory,
+} = require("../../models/category/validationSchemas");
 
 module.exports.addCategory = async (req, res, next) => {
   try {
@@ -9,6 +12,19 @@ module.exports.addCategory = async (req, res, next) => {
       throw createError(400, error.message);
     }
 
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports.updateCategory = async (req, res, next) => {
+  try {
+    const { error } = updateCategory.validate(req.body);
+
+    if (error) {
+      throw createError(400, error.message);
+    }
     next();
   } catch (error) {
     next(error);

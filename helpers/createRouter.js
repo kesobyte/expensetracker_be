@@ -17,6 +17,7 @@ class RouterCreator {
 
   setRouter() {
     this.#options.forEach(({ route, method, controller, middlewares }) => {
+      if (!route || !method || !controller) return;
       const dm = this.#defaultMiddlewares;
       const m =
         middlewares && dm.length

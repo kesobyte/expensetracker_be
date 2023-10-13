@@ -1,3 +1,5 @@
+const { createError } = require("./error");
+
 const userAccessToEntity = async (
   owner,
   model,
@@ -7,7 +9,7 @@ const userAccessToEntity = async (
   try {
     const entity = await model.findById(entityId);
     if (!entity) {
-      throw createError(404, `${entityName} was not found`);
+      throw createError(404, `${entityName} not found`);
     }
     if (String(entity.owner) !== String(owner)) {
       throw createError(403, "No access to data");

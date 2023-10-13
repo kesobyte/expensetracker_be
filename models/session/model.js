@@ -8,4 +8,4 @@ const sessionSchema = Schema({
   },
 });
 
-exports.Session = model("session", sessionSchema);
+module.exports.Session = model("session", sessionSchema);

@@ -5,7 +5,7 @@ const CATEGORY_NAME_LENGTH = {
 
 const TRANSACTION_TYPE = {
   INCOMES: "incomes",
-  EXPENCES: "expences",
+  EXPENSES: "expenses",
 };
 
 const TRANSACTION_SUM = {

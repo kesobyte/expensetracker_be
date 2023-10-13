@@ -11,7 +11,7 @@
   },
   "servers": [
     {
-      "url": "https://expences-tracker.b.goit.study/api/"
+      "url": "https://expenses-tracker.b.goit.study/api/"
     },
     {
       "url": "http://localhost:4040/api/"
@@ -375,7 +375,7 @@
         }
       }
     },
-    "/water/notes": {
+    "/categories": {
       "post": {
         "tags": ["Category"],
         "summary": "Creates user`s transactions category",
@@ -418,6 +418,138 @@
           },
           "404": {
             "description": "Invalid user / Invalid session",
+            "content": {}
+          }
+        }
+      },
+      "get": {
+        "tags": ["Category"],
+        "summary": "Get user`s transactions categories",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": true
+          }
+        ],
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Successfull operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetCategoryResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "No token provided / Bad request (invalid request body) / Category already exists",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized (invalid access token)",
+            "content": {}
+          },
+          "404": {
+            "description": "Invalid user / Invalid session",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/categories/{id}": {
+      "patch": {
+        "tags": ["Category"],
+        "summary": "Update user`s transactions category",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "Transaction category id. ('_id' field in category object)",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCategoryRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfull operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateCategoryResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "No token provided / Bad request (invalid request body)",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized (invalid access token)",
+            "content": {}
+          },
+          "403": {
+            "description": "No access to data",
+            "content": {}
+          },
+          "404": {
+            "description": "Invalid user / Invalid session / Category not found",
+            "content": {}
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Category"],
+        "summary": "Remove user`s transaction category",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "204": {
+            "description": "Successfull operation",
+            "content": {}
+          },
+          "400": {
+            "description": "No token provided",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized (invalid access token)",
+            "content": {}
+          },
+          "403": {
+            "description": "No access to data",
+            "content": {}
+          },
+          "404": {
+            "description": "Invalid user / Invalid session / Category not found",
             "content": {}
           }
         }
@@ -476,7 +608,7 @@
             "content": {}
           },
           "404": {
-            "description": "Invalid user / Invalid session / Water note was not found",
+            "description": "Invalid user / Invalid session / Water note not found",
             "content": {}
           }
         }
@@ -516,7 +648,7 @@
             "content": {}
           },
           "404": {
-            "description": "Invalid user / Invalid session / Water note was not found",
+            "description": "Invalid user / Invalid session / Water note not found",
             "content": {}
           }
         }
@@ -705,56 +837,14 @@
                 "description": "User`s avatar url",
                 "example": "https://some.url.com/path/to/avatar.jpg or null"
               },
-              "categories": {
-                "type": "object",
-                "properties": {
-                  "incomes": {
-                    "type": "array",
-                    "description": "User`s incomes categories list",
-                    "items": {
-                      "type": "object",
-                      "description": "User`s incomes categories",
-                      "properties": {
-                        "_id": {
-                          "description": "User`s transaction category id",
-                          "type": "string",
-                          "example": "6522bf1f9027bb7d55d6512b"
-                        },
-                        "name": {
-                          "description": "User`s transaction category name",
-                          "type": "string",
-                          "example": "Salary"
-                        }
-                      }
-                    }
-                  },
-                  "expences": {
-                    "type": "array",
-                    "description": "User`s expences categories list",
-                    "items": {
-                      "type": "object",
-                      "description": "User`s expences categories",
-                      "properties": {
-                        "_id": {
-                          "description": "User`s transaction category id",
-                          "type": "string",
-                          "example": "6522bf1f9027bb7d55c1973a"
-                        },
-                        "name": {
-                          "description": "User`s transaction category name",
-                          "type": "string",
-                          "example": "Car"
-                        }
-                      }
-                    }
-                  }
-                }
-              },
               "currency": {
                 "type": "string",
                 "description": "User`s transactions currency",
                 "enum": ["usd", "eur", "uah"],
                 "example": "usd"
+              },
+              "categories": {
+                "$ref": "#/components/schemas/CategoriesListSchema"
               }
             }
           },
@@ -837,49 +927,7 @@
             "enum": ["usd", "eur", "uah"]
           },
           "categories": {
-            "type": "object",
-            "properties": {
-              "incomes": {
-                "type": "array",
-                "description": "User`s incomes categories list",
-                "items": {
-                  "type": "object",
-                  "description": "User`s incomes categories",
-                  "properties": {
-                    "_id": {
-                      "description": "User`s transaction category id",
-                      "type": "string",
-                      "example": "6522bf1f9027bb7d55d6512b"
-                    },
-                    "name": {
-                      "description": "User`s transaction category name",
-                      "type": "string",
-                      "example": "Salary"
-                    }
-                  }
-                }
-              },
-              "expences": {
-                "type": "array",
-                "description": "User`s expences categories list",
-                "items": {
-                  "type": "object",
-                  "description": "User`s expences categories",
-                  "properties": {
-                    "_id": {
-                      "description": "User`s transaction category id",
-                      "type": "string",
-                      "example": "6522bf1f9027bb7d55c1973a"
-                    },
-                    "name": {
-                      "description": "User`s transaction category name",
-                      "type": "string",
-                      "example": "Car"
-                    }
-                  }
-                }
-              }
-            }
+            "$ref": "#/components/schemas/CategoriesListSchema"
           }
         }
       },
@@ -948,7 +996,7 @@
           "type": {
             "type": "string",
             "description": "Transaction type",
-            "enum": ["incomes", "expences"],
+            "enum": ["incomes", "expenses"],
             "example": "incomes"
           },
           "name": {
@@ -971,7 +1019,7 @@
           "type": {
             "type": "string",
             "description": "Transaction type",
-            "enum": ["incomes", "expences"],
+            "enum": ["incomes", "expenses"],
             "example": "incomes"
           },
           "name": {
@@ -983,6 +1031,40 @@
           }
         }
       },
+      "GetCategoriesResponse": {
+        "$ref": "#/components/schemas/CategoriesListSchema"
+      },
+      "UpdateCategoryRequest": {
+        "required": ["name"],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Category name",
+            "minLength": 2,
+            "maxLength": 16,
+            "example": "Salary"
+          }
+        }
+      },
+      "UpdateCategoryResponse": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Category id",
+            "example": "6522bf1f9027bb7d55d6512b"
+          },
+          "name": {
+            "type": "string",
+            "description": "Category name",
+            "minLength": 2,
+            "maxLength": 16,
+            "example": "Salary"
+          }
+        }
+      },
+
       "CreateWaterNoteRequest": {
         "required": ["waterVolume", "date"],
         "type": "object",
@@ -1077,81 +1159,47 @@
         "type": "object",
         "properties": {}
       },
-      "GetStatsWaterNotesByCurrentDayResponse": {
+      "CategoriesListSchema": {
         "type": "object",
         "properties": {
-          "day": {
-            "type": "string",
-            "description": "Time was drank water portion",
-            "format": "date-time"
-          },
-          "waterPercentage": {
-            "type": "integer",
-            "description": "The ratio of all water consumed per day to the daily norm of water (%)",
-            "example": 65
-          },
-          "dayliWaterRate": {
-            "type": "number",
-            "description": "User`s new water dayli norm (l)",
-            "example": 1.6
-          },
-          "waterNotes": {
+          "incomes": {
             "type": "array",
-            "description": "All water`s notes by current day",
+            "description": "User`s incomes categories list",
             "items": {
               "type": "object",
+              "description": "User`s incomes categories",
               "properties": {
                 "_id": {
+                  "description": "User`s transaction category id",
                   "type": "string",
-                  "description": "Water`s note id",
-                  "example": "506f1f77bcf86cd799439013"
+                  "example": "6522bf1f9027bb7d55d6512b"
                 },
-                "waterVolume": {
-                  "type": "integer",
-                  "description": "Amount of drank water by one time (ml)",
-                  "min": 1,
-                  "max": 5000,
-                  "example": 250
-                },
-                "date": {
+                "name": {
+                  "description": "User`s transaction category name",
                   "type": "string",
-                  "description": "Time was drank water portion",
-                  "format": "date-time"
-                },
-                "owner": {
-                  "type": "string",
-                  "description": "User`s id",
-                  "example": "507f1f77bcf86cd799439011"
+                  "example": "Salary"
                 }
               }
             }
-          }
-        }
-      },
-      "GetStatsWaterNotesByChoosedMonthResponse": {
-        "type": "array",
-        "items": {
-          "type": "object",
-          "properties": {
-            "day": {
-              "type": "string",
-              "description": "Date when was drank water",
-              "format": "date"
-            },
-            "waterPercentage": {
-              "type": "integer",
-              "description": "The ratio of all water consumed per day to the daily norm of water (%)",
-              "example": 65
-            },
-            "dayliWaterRate": {
-              "type": "number",
-              "description": "User`s new water dayli norm (l)",
-              "example": 1.6
-            },
-            "waterServings": {
-              "type": "integer",
-              "description": "Amount of drink water portion by day",
-              "example": 5
+          },
+          "expenses": {
+            "type": "array",
+            "description": "User`s expenses categories list",
+            "items": {
+              "type": "object",
+              "description": "User`s expenses categories",
+              "properties": {
+                "_id": {
+                  "description": "User`s transaction category id",
+                  "type": "string",
+                  "example": "6522bf1f9027bb7d55c1973a"
+                },
+                "name": {
+                  "description": "User`s transaction category name",
+                  "type": "string",
+                  "example": "Car"
+                }
+              }
             }
           }
         }

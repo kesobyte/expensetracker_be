@@ -4,7 +4,7 @@ const separatesCategoriesByType = (categories) =>
   !categories.length
     ? {
         [TRANSACTION_TYPE.INCOMES]: [],
-        [TRANSACTION_TYPE.EXPENCES]: [],
+        [TRANSACTION_TYPE.EXPENSES]: [],
       }
     : categories.reduce((acc, { type, name, _id }) => {
         const category = { type, name, _id };
