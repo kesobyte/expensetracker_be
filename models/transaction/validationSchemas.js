@@ -7,10 +7,7 @@ const transactionCreatingSchema = Joi.object({
     .required(),
   date: Joi.string().pattern(regex.DATE_REGEX).required(),
   time: Joi.string().pattern(regex.TIME_REGEX),
-  category: Joi.string()
-    .min(constants.CATEGORY_NAME_LENGTH.MIN)
-    .max(constants.CATEGORY_NAME_LENGTH.MAX)
-    .required(),
+  categoryId: Joi.string().required(),
   sum: Joi.number()
     .min(constants.TRANSACTION_SUM.MIN)
     .max(constants.TRANSACTION_SUM.MAX)
@@ -36,6 +33,6 @@ const transactionUpdatingSchema = Joi.object({
 });
 
 module.exports = {
-  createTransaction: transactionCreatingSchema,
+  addTransaction: transactionCreatingSchema,
   updateTransaction: transactionUpdatingSchema,
 };

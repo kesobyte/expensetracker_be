@@ -4,7 +4,7 @@ module.exports.updateCategory = async (categoryId, data) => {
   try {
     const category = await Category.findByIdAndUpdate(categoryId, data, {
       new: true,
-      select: "name",
+      select: "categoryName",
     });
     return category;
   } catch (error) {

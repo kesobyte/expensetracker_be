@@ -15,7 +15,11 @@ module.exports.getCategories = async (userId) => {
               $group: {
                 _id: "$type",
                 categoriesList: {
-                  $push: { id: "$_id", name: "$name", type: "$type" },
+                  $push: {
+                    id: "$_id",
+                    categoryName: "$categoryName",
+                    type: "$type",
+                  },
                 },
               },
             },
@@ -30,7 +34,11 @@ module.exports.getCategories = async (userId) => {
               $group: {
                 _id: "$type",
                 categoriesList: {
-                  $push: { id: "$_id", name: "$name", type: "$type" },
+                  $push: {
+                    id: "$_id",
+                    categoryName: "$categoryName",
+                    type: "$type",
+                  },
                 },
               },
             },

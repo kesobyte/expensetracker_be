@@ -1,13 +1,15 @@
 const { Category } = require("../../models");
 
 module.exports.addCategory = async (body, userId) => {
-  // body -> {name, type}
+  // body -> {categoryName, type}
   try {
     const userCategories = await Category.find({ owner: userId });
-    const bodyName = body.name.trim().toLowerCase();
+    const reqCategoryName = body.categoryName.toLowerCase();
     if (
       userCategories.some(
-        (el) => el.type === body.type && el.name.toLowerCase === bodyName
+        (el) =>
+          el.type === body.type &&
+          el.categoryName.toLowerCase === reqCategoryName
       )
     ) {
       throw createError(400, "Category already exists");
@@ -15,13 +17,13 @@ module.exports.addCategory = async (body, userId) => {
 
     const category = await Category.create({
       type: body.type,
-      name: body.name.trim(),
+      categoryName: body.categoryName,
       owner: userId,
     });
 
-    const { _id, name, type } = category;
+    const { _id, categoryName, type } = category;
 
-    return { _id, name, type };
+    return { _id, categoryName, type };
   } catch (error) {
     throw error;
   }

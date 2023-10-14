@@ -555,6 +555,59 @@
         }
       }
     },
+    "/transactions": {
+      "post": {
+        "tags": ["Transaction"],
+        "summary": "Creates user`s transaction",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": true
+          }
+        ],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "User`s transactions category object",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTransactionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successfull operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateTransactionResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "No token provided / Bad request (invalid request body, category or it type is wrong)",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized (invalid access token)",
+            "content": {}
+          },
+          "403": {
+            "description": "No access to category",
+            "content": {}
+          },
+          "404": {
+            "description": "Invalid user / Invalid session",
+            "content": {}
+          }
+        }
+      }
+    },
+
     "/water/notes/{id}": {
       "patch": {
         "tags": ["Water"],
@@ -990,7 +1043,7 @@
         }
       },
       "CreateCategoryRequest": {
-        "required": ["type", "name"],
+        "required": ["type", "categoryName"],
         "type": "object",
         "properties": {
           "type": {
@@ -999,7 +1052,7 @@
             "enum": ["incomes", "expenses"],
             "example": "incomes"
           },
-          "name": {
+          "categoryName": {
             "type": "string",
             "description": "Category name",
             "minLength": 2,
@@ -1022,7 +1075,7 @@
             "enum": ["incomes", "expenses"],
             "example": "incomes"
           },
-          "name": {
+          "categoryName": {
             "type": "string",
             "description": "Category name",
             "minLength": 2,
@@ -1035,10 +1088,15 @@
         "$ref": "#/components/schemas/CategoriesListSchema"
       },
       "UpdateCategoryRequest": {
-        "required": ["name"],
+        "required": ["categoryName"],
         "type": "object",
         "properties": {
-          "name": {
+          "_id": {
+            "type": "string",
+            "description": "Category id",
+            "example": "6522bf1f9027bb7d55d6512b"
+          },
+          "categoryName": {
             "type": "string",
             "description": "Category name",
             "minLength": 2,
@@ -1055,7 +1113,7 @@
             "description": "Category id",
             "example": "6522bf1f9027bb7d55d6512b"
           },
-          "name": {
+          "categoryName": {
             "type": "string",
             "description": "Category name",
             "minLength": 2,
@@ -1064,100 +1122,13 @@
           }
         }
       },
-
-      "CreateWaterNoteRequest": {
-        "required": ["waterVolume", "date"],
-        "type": "object",
-        "properties": {
-          "waterVolume": {
-            "type": "integer",
-            "description": "Amount of drank water by one time (ml)",
-            "min": 1,
-            "max": 5000,
-            "example": 250
-          },
-          "date": {
-            "type": "string",
-            "description": "Time was drank water portion",
-            "format": "date-time"
-          }
-        }
+      "CreateTransactionRequest": {
+        "required": ["type", "date", "time", "category", "sum", "comment"],
+        "$ref": "#/components/schemas/TransactionRequestSchema"
       },
-      "CreateWaterNoteResponse": {
+      "CreateTransactionResponse": {
         "type": "object",
-        "properties": {
-          "_id": {
-            "type": "string",
-            "description": "Water`s note id",
-            "example": "506f1f77bcf86cd799439013"
-          },
-          "waterVolume": {
-            "type": "integer",
-            "description": "Amount of drank water by one time (ml)",
-            "min": 1,
-            "max": 5000,
-            "example": 250
-          },
-          "date": {
-            "type": "string",
-            "description": "Time was drank water portion",
-            "format": "date-time"
-          },
-          "owner": {
-            "type": "string",
-            "description": "User`s id",
-            "example": "507f1f77bcf86cd799439011"
-          }
-        }
-      },
-      "UpdateWaterNoteRequest": {
-        "type": "object",
-        "properties": {
-          "waterVolume": {
-            "type": "integer",
-            "description": "Amount of drank water by one time (ml)",
-            "min": 1,
-            "max": 5000,
-            "example": 250
-          },
-          "date": {
-            "type": "string",
-            "description": "Time was drank water portion",
-            "format": "date-time"
-          }
-        }
-      },
-      "UpdateWaterNoteResponse": {
-        "type": "object",
-        "properties": {
-          "_id": {
-            "type": "string",
-            "description": "Water`s note id",
-            "example": "506f1f77bcf86cd799439013"
-          },
-          "waterVolume": {
-            "type": "integer",
-            "description": "Amount of drank water by one time (ml)",
-            "min": 1,
-            "max": 5000,
-            "example": 250
-          },
-          "date": {
-            "type": "string",
-            "description": "Time was drank water portion",
-            "format": "date-time"
-          },
-          "owner": {
-            "type": "string",
-            "description": "User`s id",
-            "example": "507f1f77bcf86cd799439011"
-          }
-        }
-      },
-      "RemoveWaterNoteResponse": {
-        "required": [],
-        "type": "object",
-        "properties": {}
+        "$ref": "#/components/schemas/TransactionResponseSchema"
       },
       "CategoriesListSchema": {
         "type": "object",
@@ -1174,7 +1145,7 @@
                   "type": "string",
                   "example": "6522bf1f9027bb7d55d6512b"
                 },
-                "name": {
+                "categoryName": {
                   "description": "User`s transaction category name",
                   "type": "string",
                   "example": "Salary"
@@ -1194,13 +1165,109 @@
                   "type": "string",
                   "example": "6522bf1f9027bb7d55c1973a"
                 },
-                "name": {
+                "categoryName": {
                   "description": "User`s transaction category name",
                   "type": "string",
                   "example": "Car"
                 }
               }
             }
+          }
+        }
+      },
+      "TransactionRequestSchema": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "description": "User`s transaction type",
+            "type": "string",
+            "enum": ["incomes", "expenses"],
+            "example": "incomes"
+          },
+          "date": {
+            "description": "User`s transaction date",
+            "type": "string",
+            "example": "2022-12-28"
+          },
+          "time": {
+            "description": "User`s transaction time",
+            "type": "string",
+            "example": "19:45"
+          },
+          "category": {
+            "description": "User`s transaction category id",
+            "type": "string",
+            "example": "6522bf1f9027bb7d55d4893f"
+          },
+          "sum": {
+            "description": "User`s transaction sum",
+            "type": "integer",
+            "min": 1,
+            "max": 1000000,
+            "example": 700
+          },
+          "comment": {
+            "description": "User`s transaction comment",
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 48,
+            "example": "December salary"
+          }
+        }
+      },
+      "TransactionResponseSchema": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "description": "User`s transaction id",
+            "type": "string",
+            "example": "6529f0a3cdeb9c878cbc5259"
+          },
+          "type": {
+            "description": "User`s transaction type",
+            "type": "string",
+            "enum": ["incomes", "expenses"],
+            "example": "incomes"
+          },
+          "date": {
+            "description": "User`s transaction date",
+            "type": "string",
+            "example": "2022-12-28"
+          },
+          "time": {
+            "description": "User`s transaction time",
+            "type": "string",
+            "example": "19:45"
+          },
+          "category": {
+            "description": "User`s transaction category",
+            "type": "object",
+            "properties": {
+              "_id": {
+                "description": "User`s transaction category id",
+                "type": "string",
+                "example": "6522bf1f9027bb7d55d6512b"
+              },
+              "categoryName": {
+                "description": "User`s transaction category name",
+                "type": "string",
+                "example": "Salary"
+              }
+            }
+          },
+          "sum": {
+            "description": "User`s transaction sum",
+            "type": "integer",
+            "min": 1,
+            "max": 1000000,
+            "example": 700
+          },
+          "comment": {
+            "description": "User`s transaction comment",
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 48,
+            "example": "December salary"
           }
         }
       }

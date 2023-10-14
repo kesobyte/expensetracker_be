@@ -3,7 +3,7 @@ const { transactionSchema: constants } = require("../../constants");
 
 const categorySchema = new Schema(
   {
-    name: {
+    categoryName: {
       type: String,
       minLength: constants.CATEGORY_NAME_LENGTH.MIN,
       maxLength: constants.CATEGORY_NAME_LENGTH.MAX,
@@ -30,5 +30,4 @@ const Category = model("category", categorySchema);
 
 module.exports = {
   Category,
-  categorySchema,
 };

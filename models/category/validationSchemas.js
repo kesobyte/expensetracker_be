@@ -2,7 +2,7 @@ const Joi = require("joi");
 const { transactionSchema: constants } = require("../../constants");
 
 const categoryCreatingSchema = Joi.object({
-  name: Joi.string()
+  categoryName: Joi.string()
     .min(constants.CATEGORY_NAME_LENGTH.MIN)
     .max(constants.CATEGORY_NAME_LENGTH.MAX)
     .required(),
@@ -12,7 +12,7 @@ const categoryCreatingSchema = Joi.object({
 });
 
 const categoryUpdatingSchema = Joi.object({
-  name: Joi.string()
+  categoryName: Joi.string()
     .min(constants.CATEGORY_NAME_LENGTH.MIN)
     .max(constants.CATEGORY_NAME_LENGTH.MAX),
 });

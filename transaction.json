@@ -24,7 +24,7 @@
         "type": "object",
         "properties": {
           "_id": "6522bf1f9027bb7d55d4893f",
-          "name": "Car",
+          "categoryName": "Car",
           "example": "Car",
           "minLength": 2,
           "maxLength": 16
