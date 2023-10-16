@@ -26,7 +26,7 @@ node("projecdep"){
                 env.gitCredential = 'pasha-goitacad-ssh';
                 env.gitUrl = 'git@github.com:goitProjects/expense_tracker_backend.git';
                 
-                env.subdomain = 'expenses-tracker.b';
+                env.subdomain = 'expense-tracker.b';
                 env.vaultFolder = 'expense-tracker-b';        
             }
     }
