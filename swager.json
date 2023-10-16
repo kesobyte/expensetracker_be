@@ -557,7 +557,7 @@
     },
     "/transactions": {
       "post": {
-        "tags": ["Transaction"],
+        "tags": ["Transactions"],
         "summary": "Creates user`s transaction",
         "parameters": [
           {
@@ -568,7 +568,7 @@
         ],
         "security": [{ "Bearer": [] }],
         "requestBody": {
-          "description": "User`s transactions category object",
+          "description": "User`s transaction object",
           "content": {
             "application/json": {
               "schema": {
@@ -607,11 +607,10 @@
         }
       }
     },
-
-    "/water/notes/{id}": {
-      "patch": {
-        "tags": ["Water"],
-        "summary": "Updates user`s water`s note",
+    "/transactions/{type}": {
+      "get": {
+        "tags": ["Transactions"],
+        "summary": "Get user`s transactions by transaction type and date",
         "parameters": [
           {
             "in": "header",
@@ -619,56 +618,52 @@
             "required": true
           },
           {
-            "in": "path",
-            "name": "id",
-            "description": "Water`s note id. ('_id' field in water`s note's object)",
-            "required": true,
-            "type": "string"
+            "in": "params",
+            "description": "Transactions type",
+            "name": "type",
+            "schema": {
+              "enum": ["incomes", "expenses"]
+            },
+            "required": true
+          },
+          {
+            "in": "query",
+            "description": "Transactions of chosed date or all transactions if without date",
+            "name": "date",
+            "schema": {
+              "example": "2023-10-15"
+            }
           }
         ],
         "security": [{ "Bearer": [] }],
-        "requestBody": {
-          "description": "Updates water`s note info. At least one field is required.",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateWaterNoteRequest"
-              }
-            }
-          }
-        },
         "responses": {
           "200": {
             "description": "Successfull operation",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UpdateWaterNoteResponse"
+                  "$ref": "#/components/schemas/GetTransactionsResponse"
                 }
               }
             }
           },
           "400": {
-            "description": "No token provided / Bad request (invalid request body)",
+            "description": "No token provided / Invalid request, type must be one of [incomes, expenses]",
             "content": {}
           },
           "401": {
             "description": "Unauthorized (invalid access token)",
             "content": {}
           },
-          "403": {
-            "description": "No access to data",
-            "content": {}
-          },
           "404": {
-            "description": "Invalid user / Invalid session / Water note not found",
+            "description": "Invalid user / Invalid session",
             "content": {}
           }
         }
       },
       "delete": {
-        "tags": ["Water"],
-        "summary": "Remove user`s water`s note",
+        "tags": ["Transactions"],
+        "summary": "Remove user`s transaction by ID",
         "parameters": [
           {
             "in": "header",
@@ -676,9 +671,9 @@
             "required": true
           },
           {
-            "in": "path",
+            "in": "params",
+            "description": "Transactions ID",
             "name": "id",
-            "description": "Water`s note id. ('_id' field in water`s note's object)",
             "required": true
           }
         ],
@@ -697,58 +692,20 @@
             "content": {}
           },
           "403": {
-            "description": "No access to data",
+            "description": "No access to transaction",
             "content": {}
           },
           "404": {
-            "description": "Invalid user / Invalid session / Water note not found",
+            "description": "Invalid user / Invalid session / Transaction not found",
             "content": {}
           }
         }
       }
     },
-    "/water/stats/day": {
-      "get": {
-        "tags": ["Water"],
-        "summary": "Gets the user's statistics on the water consumed for the current day",
-        "parameters": [
-          {
-            "in": "header",
-            "name": "Authorization",
-            "required": true
-          }
-        ],
-        "security": [{ "Bearer": [] }],
-        "responses": {
-          "200": {
-            "description": "Successfull operation",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetStatsWaterNotesByCurrentDayResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "No token provided / Water rate must be greater than zero",
-            "content": {}
-          },
-          "401": {
-            "description": "Unauthorized (invalid access token)",
-            "content": {}
-          },
-          "404": {
-            "description": "Invalid user / Invalid session",
-            "content": {}
-          }
-        }
-      }
-    },
-    "/water/stats/:month": {
-      "get": {
-        "tags": ["Water"],
-        "summary": "Gets the user's statistics on the water consumed for the chosed month",
+    "/transactions/{type}/{id}": {
+      "patch": {
+        "tags": ["Transactions"],
+        "summary": "Update user`s transactions by transaction",
         "parameters": [
           {
             "in": "header",
@@ -756,38 +713,59 @@
             "required": true
           },
           {
-            "in": "path",
-            "name": "month",
-            "description": "Chosed month for statistics period (format YYYY-MM)",
-            "required": true,
+            "in": "params",
+            "description": "Transactions type",
+            "name": "type",
             "schema": {
-              "type": "string",
-              "minimum": 1
+              "enum": ["incomes", "expenses"]
+            },
+            "required": true
+          },
+          {
+            "in": "params",
+            "description": "Updating transaction ID",
+            "name": "id",
+            "schema": {
+              "example": "6529f0a3cdeb9c878cbc5259"
             }
           }
         ],
         "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "User`s transaction object",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTransactionRequest"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Successfull operation",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetStatsWaterNotesByChoosedMonthResponse"
+                  "$ref": "#/components/schemas/UpdateTransactionResponse"
                 }
               }
             }
           },
           "400": {
-            "description": "No token provided / Water rate must be greater than zero / Invalid date format in path",
+            "description": "No token provided / Invalid request, type must be one of [incomes, expenses] / Bad request (invalid request body)",
             "content": {}
           },
           "401": {
             "description": "Unauthorized (invalid access token)",
             "content": {}
           },
+          "403": {
+            "description": "No access to transaction",
+            "content": {}
+          },
           "404": {
-            "description": "Invalid user / Invalid session",
+            "description": "Invalid user / Invalid session / Invalid request, transaction not found",
             "content": {}
           }
         }
@@ -897,7 +875,7 @@
                 "example": "usd"
               },
               "categories": {
-                "$ref": "#/components/schemas/CategoriesListSchema"
+                "$ref": "#/components/examples/CategoriesListSchema"
               }
             }
           },
@@ -980,7 +958,7 @@
             "enum": ["usd", "eur", "uah"]
           },
           "categories": {
-            "$ref": "#/components/schemas/CategoriesListSchema"
+            "$ref": "#/components/examples/CategoriesListSchema"
           }
         }
       },
@@ -1085,7 +1063,7 @@
         }
       },
       "GetCategoriesResponse": {
-        "$ref": "#/components/schemas/CategoriesListSchema"
+        "$ref": "#/components/examples/CategoriesListSchema"
       },
       "UpdateCategoryRequest": {
         "required": ["categoryName"],
@@ -1124,11 +1102,88 @@
       },
       "CreateTransactionRequest": {
         "required": ["type", "date", "time", "category", "sum", "comment"],
-        "$ref": "#/components/schemas/TransactionRequestSchema"
+        "$ref": "#/components/examples/TransactionRequestSchema"
       },
       "CreateTransactionResponse": {
         "type": "object",
-        "$ref": "#/components/schemas/TransactionResponseSchema"
+        "$ref": "#/components/examples/TransactionResponseSchema"
+      },
+      "GetTransactionsResponse": {
+        "description": "User`s transactions list",
+        "oneOf": [
+          { "$ref": "#/components/examples/IncomesTransactionsListSchema" },
+          { "$ref": "#/components/examples/ExpensesTransactionsListSchema" }
+        ]
+      },
+      "UpdateTransactionRequest": {
+        "description": "Transaction data object to update",
+        "type": "object",
+        "properties": {
+          "date": {
+            "$ref": "#/components/examples/transaction/date"
+          },
+          "time": {
+            "$ref": "#/components/examples/transaction/time"
+          },
+          "category": {
+            "$ref": "#/components/examples/category/id"
+          },
+          "sum": {
+            "$ref": "#/components/examples/transaction/sum"
+          },
+          "comment": {
+            "$ref": "#/components/examples/transaction/comment"
+          }
+        }
+      },
+      "UpdateTransactionResponse": {
+        "description": "Updated transaction data",
+        "type": "object",
+        "properties": {
+          "date": {
+            "$ref": "#/components/examples/transaction/date"
+          },
+          "time": {
+            "$ref": "#/components/examples/transaction/time"
+          },
+          "category": {
+            "$ref": "#/components/examples/CategoryResponseItem"
+          },
+          "sum": {
+            "$ref": "#/components/examples/transaction/sum"
+          },
+          "comment": {
+            "$ref": "#/components/examples/transaction/comment"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "examples": {
+      "CategoryResponseItem": {
+        "description": "User`s category",
+        "type": "object",
+        "properties": {
+          "_id": {
+            "$ref": "#/components/examples/category/id"
+          },
+          "categoryName": {
+            "oneOf": [
+              {
+                "$ref": "#/components/examples/category/incomesName"
+              },
+              {
+                "$ref": "#/components/examples/category/expensesName"
+              }
+            ]
+          }
+        }
       },
       "CategoriesListSchema": {
         "type": "object",
@@ -1175,6 +1230,7 @@
           }
         }
       },
+
       "TransactionRequestSchema": {
         "type": "object",
         "properties": {
@@ -1215,29 +1271,21 @@
           }
         }
       },
-      "TransactionResponseSchema": {
+      "IncomesTransactionItemSchema": {
+        "description": "User's income transaction object",
         "type": "object",
         "properties": {
           "_id": {
-            "description": "User`s transaction id",
-            "type": "string",
-            "example": "6529f0a3cdeb9c878cbc5259"
+            "$ref": "#/components/examples/transaction/id"
           },
           "type": {
-            "description": "User`s transaction type",
-            "type": "string",
-            "enum": ["incomes", "expenses"],
-            "example": "incomes"
+            "$ref": "#/components/examples/transaction/incomesType"
           },
           "date": {
-            "description": "User`s transaction date",
-            "type": "string",
-            "example": "2022-12-28"
+            "$ref": "#/components/examples/transaction/date"
           },
           "time": {
-            "description": "User`s transaction time",
-            "type": "string",
-            "example": "19:45"
+            "$ref": "#/components/examples/transaction/time"
           },
           "category": {
             "description": "User`s transaction category",
@@ -1270,13 +1318,125 @@
             "example": "December salary"
           }
         }
-      }
-    },
-    "securitySchemes": {
-      "Bearer": {
-        "type": "http",
-        "scheme": "bearer",
-        "bearerFormat": "JWT"
+      },
+      "ExpensesTransactionItemSchema": {
+        "description": "User's expense transaction object",
+        "type": "object",
+        "properties": {
+          "_id": {
+            "$ref": "#/components/examples/transaction/id"
+          },
+          "type": {
+            "$ref": "#/components/examples/transaction/incomesType"
+          },
+          "date": {
+            "$ref": "#/components/examples/transaction/date"
+          },
+          "time": {
+            "$ref": "#/components/examples/transaction/time"
+          },
+          "category": {
+            "description": "User`s transaction category",
+            "type": "object",
+            "properties": {
+              "_id": {
+                "$ref": "#/components/examples/category/id"
+              },
+              "categoryName": {
+                "$ref": "#/components/examples/category/incomesName"
+              }
+            }
+          },
+          "sum": {
+            "$ref": "#/components/examples/transaction/sum"
+          },
+          "comment": {
+            "$ref": "#/components/examples/transaction/comment"
+          }
+        }
+      },
+      "IncomesTransactionsListSchema": {
+        "description": "Incomes transactions list",
+        "type": "array",
+        "items": {
+          "$ref": "#/components/examples/IncomesTransactionItemSchema"
+        }
+      },
+      "ExpensesTransactionsListSchema": {
+        "description": "Expenses transactions list",
+        "type": "array",
+        "items": {
+          "$ref": "#/components/examples/ExpensesTransactionItemSchema"
+        }
+      },
+      "category": {
+        "id": {
+          "type": "string",
+          "description": "Category id",
+          "example": "6522bf1f9027bb7d55d6512b"
+        },
+        "incomesName": {
+          "type": "string",
+          "description": "Incomes category name",
+          "minLength": 2,
+          "maxLength": 16,
+          "example": "Salary"
+        },
+        "expensesName": {
+          "type": "string",
+          "description": "Expenses category name",
+          "minLength": 2,
+          "maxLength": 16,
+          "example": "Car"
+        }
+      },
+      "transaction": {
+        "id": {
+          "description": "User`s transaction id",
+          "type": "string",
+          "example": "6529eff94ceb918e15a171f1"
+        },
+        "incomesType": {
+          "description": "User`s transaction type",
+          "type": "string",
+          "enum": ["incomes", "expenses"],
+          "example": "incomes"
+        },
+        "expensesType": {
+          "description": "User`s transaction type",
+          "type": "string",
+          "enum": ["incomes", "expenses"],
+          "example": "expenses"
+        },
+        "date": {
+          "description": "User`s transaction date",
+          "type": "string",
+          "example": "2022-12-28"
+        },
+        "time": {
+          "description": "User`s transaction time",
+          "type": "string",
+          "example": "19:45"
+        },
+        "category": {
+          "description": "User`s transaction category id",
+          "type": "string",
+          "example": "6522bf1f9027bb7d55d4893f"
+        },
+        "sum": {
+          "description": "User`s transaction sum",
+          "type": "integer",
+          "min": 1,
+          "max": 1000000,
+          "example": 700
+        },
+        "comment": {
+          "description": "User`s transaction comment",
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 48,
+          "example": "December salary"
+        }
       }
     }
   }

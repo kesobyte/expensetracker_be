@@ -15,7 +15,7 @@ const userAccessToEntity = async (
       throw createError(403, "No access to data");
     }
 
-    return true;
+    return entity;
   } catch (error) {
     throw error;
   }

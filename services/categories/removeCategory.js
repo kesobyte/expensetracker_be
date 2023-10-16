@@ -2,8 +2,8 @@ const { Category } = require("../../models");
 
 module.exports.removeCategory = async (id) => {
   try {
-    await Category.deleteOne({ _id: id });
-    return null;
+    const category = await Category.findByIdAndRemove(id);
+    return category;
   } catch (error) {
     throw error;
   }

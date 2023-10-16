@@ -10,6 +10,8 @@ const {
   transactionsRouter,
 } = require("./routes/api");
 
+// console.log("swaggerDocument :>> ", typeof swaggerDocument);
+
 const app = express();
 
 const loggerFormat = app.get("env") === "development" ? "dev" : "short";
