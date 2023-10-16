@@ -3,7 +3,7 @@
   "info": {
     "version": "1.0.0",
     "title": "WaterTraker API docs",
-    "description": "API documentation for GoIT project 'Water Traker'. [Backend github repository](https://github.com/z9877969/water_traker_backend)",
+    "description": "API documentation for GoIT project 'Expense Tracker'. [Backend github repository](https://github.com/z9877969/expense_tracker_backend)",
     "license": {
       "name": "MIT",
       "url": "https://opensource.org/licenses/MIT"
