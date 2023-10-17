@@ -9,7 +9,6 @@ const getHoursDiff = require("./getHoursDiff");
 const getUserAccessToEntity = require("./getUserAccessToEntity");
 const createRouter = require("./createRouter");
 const separatesCategoriesByType = require("./separatesCategoriesByType");
-const { middlewareContainer } = require("./middlewareContainer");
 
 module.exports = {
   createError,
@@ -24,5 +23,4 @@ module.exports = {
   getUserAccessToEntity,
   createRouter,
   separatesCategoriesByType,
-  middlewareContainer,
 };
