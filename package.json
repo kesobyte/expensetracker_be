@@ -2,17 +2,14 @@
   "name": "water_traker_backend",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "index.js",
   "engines": {
     "node": "<=18.18.0 <19.0.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node ./server.js",
-    "start:dev": "nodemon ./server.js",
-    "build": "npm install && npm run build-server",
-    "build-server": "echo 'Building server...' && npm run compile-server",
-    "compile-server": "echo 'Compiling server...'"
+    "start:dev": "nodemon ./server.js"
 },
   },
   "repository": {
