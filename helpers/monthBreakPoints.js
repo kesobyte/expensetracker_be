@@ -12,7 +12,7 @@ const getMonthBreakPoints = (date) => {
 const monthBreakPoints = {
   getSome: getMonthBreakPoints,
   getCurrent: () => {
-    // const date =
+    // const date = new Date();
     const [year, month] = date
       .split("-")
       .splice(0, 2)
@@ -28,5 +28,6 @@ const date = new Date();
 // console.log(date.toISOString());
 // console.log(Date.UTC());
 // console.log(date.getTimezoneOffset());
+// console.log(monthBreakPoints.getCurrent());
 
 module.exports = monthBreakPoints;

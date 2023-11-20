@@ -3,6 +3,7 @@ const {
   passwordTools,
   tokenTools,
   separatesCategoriesByType,
+  getTransactionsTotal,
 } = require("../../helpers");
 const { User, Session, Category } = require("../../models");
 // const {
@@ -15,21 +16,6 @@ const loginUser = async (body) => {
   try {
     const user = await User.findOne({ email: body.email });
     await Session.deleteMany({ uid: user._id });
-    /* 
-    # resolve with aggregate
-    let user = await User.aggregate([
-      { $match: { email: body.email } },
-      {
-        $lookup: {
-          from: "category",
-          localField: "_id",
-          foreignField: "owner",
-          as: "qwe",
-        },
-      },
-    ]);
-    user = user[0]; 
-    */
 
     const isPasswordsCompare = user
       ? await passwordTools.compare(body.password, user.password)
@@ -51,21 +37,18 @@ const loginUser = async (body) => {
     const userCategories = await Category.find({ owner: user._id });
 
     const categories = separatesCategoriesByType(userCategories);
-
-    /* 
-    # resolve to transactions sum by current month
-    const transactions = Transaction.aggregate([
-      {
-        $match: {
-          date: { $gt: prev, $lt: next },
-          owner: { $eq: _id },
-        },
-      },
-    ]); 
-    */
+    const transactionsTotal = await getTransactionsTotal(user._id);
 
     return {
-      user: { _id, email, name, avatarUrl, categories, currency },
+      user: {
+        _id,
+        email,
+        name,
+        avatarUrl,
+        categories,
+        currency,
+        transactionsTotal,
+      },
       // user,
       sid,
       accessToken,
