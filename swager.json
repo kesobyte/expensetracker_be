@@ -11,7 +11,7 @@
   },
   "servers": [
     {
-      "url": "https://expenses-tracker.b.goit.study/api/"
+      "url": "https://expense-tracker.b.goit.study/api/"
     },
     {
       "url": "http://localhost:4040/api/"
