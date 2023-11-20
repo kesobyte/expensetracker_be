@@ -5,7 +5,7 @@ module.exports.addTransaction = async (userId, body) => {
   // body -> {categoryName, type, date, time, category, sum, comment}
   try {
     const userCategory = await Category.findOne(
-      { _id: body.categoryId },
+      { _id: body.category },
       "-createdAt -updatedAt"
     );
 
@@ -17,14 +17,16 @@ module.exports.addTransaction = async (userId, body) => {
       throw createError(403, "No access to category");
     }
 
-    const { categoryId, ...rest } = body;
+    // const { category, ...rest } = body;
 
     const transaction = await Transaction.create({
-      ...rest,
-      category: categoryId,
+      // ...rest,
+      // category: categoryId,
+      body,
       owner: userId,
     });
-    const { _id, categoryName, type, date, time, sum, comment } = transaction;
+    const { _id, categoryName, type, date, time, sum, comment, ISODate } =
+      transaction;
 
     return {
       _id,

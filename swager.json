@@ -38,7 +38,9 @@
   "paths": {
     "/auth/register": {
       "post": {
-        "tags": ["Auth"],
+        "tags": [
+          "Auth"
+        ],
         "summary": "User registration",
         "parameters": [],
         "requestBody": {
@@ -76,7 +78,9 @@
     },
     "/auth/login": {
       "post": {
-        "tags": ["Auth"],
+        "tags": [
+          "Auth"
+        ],
         "summary": "User login",
         "parameters": [],
         "requestBody": {
@@ -114,7 +118,9 @@
     },
     "/auth/logout": {
       "get": {
-        "tags": ["Auth"],
+        "tags": [
+          "Auth"
+        ],
         "summary": "User logout",
         "parameters": [
           {
@@ -123,7 +129,11 @@
             "required": true
           }
         ],
-        "security": [{ "Bearer": [] }],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "responses": {
           "204": {
             "description": "Successfull operation",
@@ -146,7 +156,9 @@
     },
     "/auth/refresh": {
       "post": {
-        "tags": ["Auth"],
+        "tags": [
+          "Auth"
+        ],
         "summary": "Gets new pair of tokens (use Bearer {refreshToken} instead of accessToken)",
         "parameters": [
           {
@@ -199,7 +211,9 @@
     },
     "/users/current": {
       "get": {
-        "tags": ["User"],
+        "tags": [
+          "User"
+        ],
         "summary": "Gets about user info",
         "parameters": [
           {
@@ -208,7 +222,11 @@
             "required": true
           }
         ],
-        "security": [{ "Bearer": [] }],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successfull operation",
@@ -237,7 +255,9 @@
     },
     "/users/info": {
       "patch": {
-        "tags": ["User"],
+        "tags": [
+          "User"
+        ],
         "summary": "Updates about user info",
         "parameters": [
           {
@@ -246,7 +266,11 @@
             "required": true
           }
         ],
-        "security": [{ "Bearer": [] }],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "requestBody": {
           "description": "User`s data to update. At least one field is required.",
           "content": {
@@ -289,7 +313,9 @@
     },
     "/users/avatar": {
       "patch": {
-        "tags": ["User"],
+        "tags": [
+          "User"
+        ],
         "summary": "Updates user`s avatar",
         "parameters": [
           {
@@ -298,7 +324,11 @@
             "required": true
           }
         ],
-        "security": [{ "Bearer": [] }],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "requestBody": {
           "description": "New user`s avatar file",
           "content": {
@@ -335,7 +365,9 @@
         }
       },
       "delete": {
-        "tags": ["User"],
+        "tags": [
+          "User"
+        ],
         "summary": "Remove user`s avatar",
         "parameters": [
           {
@@ -350,7 +382,11 @@
             "required": true
           }
         ],
-        "security": [{ "Bearer": [] }],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "responses": {
           "204": {
             "description": "Successfull operation",
@@ -377,7 +413,9 @@
     },
     "/categories": {
       "post": {
-        "tags": ["Category"],
+        "tags": [
+          "Category"
+        ],
         "summary": "Creates user`s transactions category",
         "parameters": [
           {
@@ -386,7 +424,11 @@
             "required": true
           }
         ],
-        "security": [{ "Bearer": [] }],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "requestBody": {
           "description": "User`s transactions category object",
           "content": {
@@ -423,7 +465,9 @@
         }
       },
       "get": {
-        "tags": ["Category"],
+        "tags": [
+          "Category"
+        ],
         "summary": "Get user`s transactions categories",
         "parameters": [
           {
@@ -432,7 +476,11 @@
             "required": true
           }
         ],
-        "security": [{ "Bearer": [] }],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successfull operation",
@@ -461,7 +509,9 @@
     },
     "/categories/{id}": {
       "patch": {
-        "tags": ["Category"],
+        "tags": [
+          "Category"
+        ],
         "summary": "Update user`s transactions category",
         "parameters": [
           {
@@ -475,7 +525,11 @@
             "required": true
           }
         ],
-        "security": [{ "Bearer": [] }],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "requestBody": {
           "description": "Transaction category id. ('_id' field in category object)",
           "content": {
@@ -516,7 +570,9 @@
         }
       },
       "delete": {
-        "tags": ["Category"],
+        "tags": [
+          "Category"
+        ],
         "summary": "Remove user`s transaction category",
         "parameters": [
           {
@@ -530,7 +586,11 @@
             "required": true
           }
         ],
-        "security": [{ "Bearer": [] }],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "responses": {
           "204": {
             "description": "Successfull operation",
@@ -557,7 +617,9 @@
     },
     "/transactions": {
       "post": {
-        "tags": ["Transactions"],
+        "tags": [
+          "Transactions"
+        ],
         "summary": "Creates user`s transaction",
         "parameters": [
           {
@@ -566,7 +628,11 @@
             "required": true
           }
         ],
-        "security": [{ "Bearer": [] }],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "requestBody": {
           "description": "User`s transaction object",
           "content": {
@@ -609,7 +675,9 @@
     },
     "/transactions/{type}": {
       "get": {
-        "tags": ["Transactions"],
+        "tags": [
+          "Transactions"
+        ],
         "summary": "Get user`s transactions by transaction type and date",
         "parameters": [
           {
@@ -622,7 +690,10 @@
             "description": "Transactions type",
             "name": "type",
             "schema": {
-              "enum": ["incomes", "expenses"]
+              "enum": [
+                "incomes",
+                "expenses"
+              ]
             },
             "required": true
           },
@@ -635,7 +706,11 @@
             }
           }
         ],
-        "security": [{ "Bearer": [] }],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successfull operation",
@@ -662,7 +737,9 @@
         }
       },
       "delete": {
-        "tags": ["Transactions"],
+        "tags": [
+          "Transactions"
+        ],
         "summary": "Remove user`s transaction by ID",
         "parameters": [
           {
@@ -677,7 +754,11 @@
             "required": true
           }
         ],
-        "security": [{ "Bearer": [] }],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "responses": {
           "204": {
             "description": "Successfull operation",
@@ -704,7 +785,9 @@
     },
     "/transactions/{type}/{id}": {
       "patch": {
-        "tags": ["Transactions"],
+        "tags": [
+          "Transactions"
+        ],
         "summary": "Update user`s transactions by transaction",
         "parameters": [
           {
@@ -717,7 +800,10 @@
             "description": "Transactions type",
             "name": "type",
             "schema": {
-              "enum": ["incomes", "expenses"]
+              "enum": [
+                "incomes",
+                "expenses"
+              ]
             },
             "required": true
           },
@@ -730,7 +816,11 @@
             }
           }
         ],
-        "security": [{ "Bearer": [] }],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "requestBody": {
           "description": "User`s transaction object",
           "content": {
@@ -775,7 +865,11 @@
   "components": {
     "schemas": {
       "RegistrationRequest": {
-        "required": ["name", "email", "password"],
+        "required": [
+          "name",
+          "email",
+          "password"
+        ],
         "type": "object",
         "properties": {
           "name": {
@@ -821,7 +915,10 @@
         }
       },
       "LoginRequest": {
-        "required": ["email", "password"],
+        "required": [
+          "email",
+          "password"
+        ],
         "type": "object",
         "properties": {
           "email": {
@@ -871,11 +968,18 @@
               "currency": {
                 "type": "string",
                 "description": "User`s transactions currency",
-                "enum": ["usd", "eur", "uah"],
+                "enum": [
+                  "usd",
+                  "eur",
+                  "uah"
+                ],
                 "example": "usd"
               },
               "categories": {
                 "$ref": "#/components/examples/CategoriesListSchema"
+              },
+              "transactionsTotal": {
+                "$ref": "#/components/examples/transactionsTotal"
               }
             }
           },
@@ -897,7 +1001,9 @@
         }
       },
       "RefreshTokensRequest": {
-        "required": ["sid"],
+        "required": [
+          "sid"
+        ],
         "type": "object",
         "properties": {
           "sid": {
@@ -955,10 +1061,17 @@
           "currency": {
             "type": "string",
             "description": "User's transactions currency",
-            "enum": ["usd", "eur", "uah"]
+            "enum": [
+              "usd",
+              "eur",
+              "uah"
+            ]
           },
           "categories": {
             "$ref": "#/components/examples/CategoriesListSchema"
+          },
+          "transactionsTotal": {
+            "$ref": "#/components/examples/transactionsTotal"
           }
         }
       },
@@ -975,7 +1088,11 @@
           "currency": {
             "type": "string",
             "description": "User's transactions currency",
-            "enum": ["usd", "eur", "uah"]
+            "enum": [
+              "usd",
+              "eur",
+              "uah"
+            ]
           }
         }
       },
@@ -996,12 +1113,18 @@
           "currency": {
             "type": "string",
             "description": "User's transactions currency",
-            "enum": ["usd", "eur", "uah"]
+            "enum": [
+              "usd",
+              "eur",
+              "uah"
+            ]
           }
         }
       },
       "UpdateAvatarRequest": {
-        "required": ["avatar"],
+        "required": [
+          "avatar"
+        ],
         "type": "object",
         "properties": {
           "avatar": {
@@ -1021,13 +1144,19 @@
         }
       },
       "CreateCategoryRequest": {
-        "required": ["type", "categoryName"],
+        "required": [
+          "type",
+          "categoryName"
+        ],
         "type": "object",
         "properties": {
           "type": {
             "type": "string",
             "description": "Transaction type",
-            "enum": ["incomes", "expenses"],
+            "enum": [
+              "incomes",
+              "expenses"
+            ],
             "example": "incomes"
           },
           "categoryName": {
@@ -1050,7 +1179,10 @@
           "type": {
             "type": "string",
             "description": "Transaction type",
-            "enum": ["incomes", "expenses"],
+            "enum": [
+              "incomes",
+              "expenses"
+            ],
             "example": "incomes"
           },
           "categoryName": {
@@ -1066,7 +1198,9 @@
         "$ref": "#/components/examples/CategoriesListSchema"
       },
       "UpdateCategoryRequest": {
-        "required": ["categoryName"],
+        "required": [
+          "categoryName"
+        ],
         "type": "object",
         "properties": {
           "_id": {
@@ -1101,7 +1235,14 @@
         }
       },
       "CreateTransactionRequest": {
-        "required": ["type", "date", "time", "category", "sum", "comment"],
+        "required": [
+          "type",
+          "date",
+          "time",
+          "category",
+          "sum",
+          "comment"
+        ],
         "$ref": "#/components/examples/TransactionRequestSchema"
       },
       "CreateTransactionResponse": {
@@ -1111,8 +1252,12 @@
       "GetTransactionsResponse": {
         "description": "User`s transactions list",
         "oneOf": [
-          { "$ref": "#/components/examples/IncomesTransactionsListSchema" },
-          { "$ref": "#/components/examples/ExpensesTransactionsListSchema" }
+          {
+            "$ref": "#/components/examples/IncomesTransactionsListSchema"
+          },
+          {
+            "$ref": "#/components/examples/ExpensesTransactionsListSchema"
+          }
         ]
       },
       "UpdateTransactionRequest": {
@@ -1196,14 +1341,10 @@
               "description": "User`s incomes categories",
               "properties": {
                 "_id": {
-                  "description": "User`s transaction category id",
-                  "type": "string",
-                  "example": "6522bf1f9027bb7d55d6512b"
+                  "$ref": "#/components/examples/category/id"
                 },
                 "categoryName": {
-                  "description": "User`s transaction category name",
-                  "type": "string",
-                  "example": "Salary"
+                  "$ref": "#/components/examples/category/incomesName"
                 }
               }
             }
@@ -1230,44 +1371,52 @@
           }
         }
       },
-
       "TransactionRequestSchema": {
         "type": "object",
         "properties": {
           "type": {
-            "description": "User`s transaction type",
-            "type": "string",
-            "enum": ["incomes", "expenses"],
-            "example": "incomes"
+            "$ref": "#/components/examples/transaction/incomesType"
           },
           "date": {
-            "description": "User`s transaction date",
-            "type": "string",
-            "example": "2022-12-28"
+            "$ref": "#/components/examples/transaction/date"
           },
           "time": {
-            "description": "User`s transaction time",
-            "type": "string",
-            "example": "19:45"
+            "$ref": "#/components/examples/transaction/time"
           },
           "category": {
-            "description": "User`s transaction category id",
-            "type": "string",
-            "example": "6522bf1f9027bb7d55d4893f"
+            "$ref": "#/components/examples/category/id"
           },
           "sum": {
-            "description": "User`s transaction sum",
-            "type": "integer",
-            "min": 1,
-            "max": 1000000,
-            "example": 700
+            "$ref": "#/components/examples/transaction/sum"
           },
           "comment": {
-            "description": "User`s transaction comment",
-            "type": "string",
-            "minLength": 3,
-            "maxLength": 48,
-            "example": "December salary"
+            "$ref": "#/components/examples/transaction/comment"
+          }
+        }
+      },
+      "TransactionResponseSchema": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "$ref": "#/components/examples/transaction/id"
+          },
+          "type": {
+            "$ref": "#/components/examples/transaction/incomesType"
+          },
+          "date": {
+            "$ref": "#/components/examples/transaction/date"
+          },
+          "time": {
+            "$ref": "#/components/examples/transaction/time"
+          },
+          "category": {
+            "$ref": "#/components/examples/category/id"
+          },
+          "sum": {
+            "$ref": "#/components/examples/transaction/sum"
+          },
+          "comment": {
+            "$ref": "#/components/examples/transaction/comment"
           }
         }
       },
@@ -1369,6 +1518,18 @@
           "$ref": "#/components/examples/ExpensesTransactionItemSchema"
         }
       },
+      "transactionsTotal": {
+        "description": "User`s transactions total by current month",
+        "type": "object",
+        "properties": {
+          "incomes": {
+            "$ref": "#/components/examples/transaction/total"
+          },
+          "expenses": {
+            "$ref": "#/components/examples/transaction/total"
+          }
+        }
+      },
       "category": {
         "id": {
           "type": "string",
@@ -1399,13 +1560,19 @@
         "incomesType": {
           "description": "User`s transaction type",
           "type": "string",
-          "enum": ["incomes", "expenses"],
+          "enum": [
+            "incomes",
+            "expenses"
+          ],
           "example": "incomes"
         },
         "expensesType": {
           "description": "User`s transaction type",
           "type": "string",
-          "enum": ["incomes", "expenses"],
+          "enum": [
+            "incomes",
+            "expenses"
+          ],
           "example": "expenses"
         },
         "date": {
@@ -1436,6 +1603,11 @@
           "minLength": 3,
           "maxLength": 48,
           "example": "December salary"
+        },
+        "total": {
+          "type": "integer",
+          "min": 0,
+          "example": 700
         }
       }
     }
