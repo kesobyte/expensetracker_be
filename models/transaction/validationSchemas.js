@@ -6,7 +6,7 @@ const transactionCreatingSchema = Joi.object({
     .valid(...Object.values(constants.TRANSACTION_TYPE))
     .required(),
   date: Joi.string().pattern(regex.DATE_REGEX).required(),
-  time: Joi.string().pattern(regex.TIME_REGEX),
+  time: Joi.string().pattern(regex.TIME_REGEX).required(),
   category: Joi.string().required(),
   sum: Joi.number()
     .min(constants.TRANSACTION_SUM.MIN)

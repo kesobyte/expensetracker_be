@@ -2,7 +2,7 @@ const { createError } = require("../../helpers");
 const { Transaction, Category } = require("../../models");
 
 module.exports.addTransaction = async (userId, body) => {
-  // body -> {categoryName, type, date, time, category, sum, comment}
+  // body -> {type, date, time, category, sum, comment}
   try {
     const userCategory = await Category.findOne(
       { _id: body.category },
@@ -17,20 +17,14 @@ module.exports.addTransaction = async (userId, body) => {
       throw createError(403, "No access to category");
     }
 
-    // const { category, ...rest } = body;
-
     const transaction = await Transaction.create({
-      // ...rest,
-      // category: categoryId,
-      body,
+      ...body,
       owner: userId,
     });
-    const { _id, categoryName, type, date, time, sum, comment, ISODate } =
-      transaction;
+    const { _id, type, date, time, sum, comment } = transaction;
 
     return {
       _id,
-      categoryName,
       type,
       date,
       time,

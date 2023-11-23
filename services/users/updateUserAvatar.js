@@ -37,8 +37,6 @@ const updateUserAvatar = async (user, file) => {
         { new: true, select: "avatarUrl -_id" }
       );
 
-      // await filesTools.resizeAndReplaceImageFile(tmpDir, newAvatarFileName);
-
       return updatedAvatarUrl;
     } catch (error) {
       throw createError(400, error.message);

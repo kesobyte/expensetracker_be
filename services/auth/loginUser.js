@@ -6,11 +6,6 @@ const {
   getTransactionsTotal,
 } = require("../../helpers");
 const { User, Session, Category } = require("../../models");
-// const {
-//   transactionSchema: transactionSchemaConstants,
-// } = require("../../constants");
-
-// const { TRANSACTION_TYPE } = transactionSchemaConstants;
 
 const loginUser = async (body) => {
   try {
@@ -50,7 +45,6 @@ const loginUser = async (body) => {
         currency,
         transactionsTotal,
       },
-      // user,
       sid,
       accessToken,
       refreshToken,
