@@ -487,7 +487,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetCategoryResponse"
+                  "$ref": "#/components/schemas/GetCategoriesResponse"
                 }
               }
             }
@@ -1338,13 +1338,18 @@
             "description": "User`s incomes categories list",
             "items": {
               "type": "object",
-              "description": "User`s incomes categories",
+              "description": "User`s incomes category",
               "properties": {
                 "_id": {
                   "$ref": "#/components/examples/category/id"
                 },
                 "categoryName": {
                   "$ref": "#/components/examples/category/incomesName"
+                },
+                "type": {
+                  "description": "Transaction type",
+                  "type": "string",
+                  "example": "incomes"
                 }
               }
             }
@@ -1354,7 +1359,7 @@
             "description": "User`s expenses categories list",
             "items": {
               "type": "object",
-              "description": "User`s expenses categories",
+              "description": "User`s expenses category",
               "properties": {
                 "_id": {
                   "description": "User`s transaction category id",
@@ -1365,6 +1370,11 @@
                   "description": "User`s transaction category name",
                   "type": "string",
                   "example": "Car"
+                },
+                "type": {
+                  "description": "Transaction type",
+                  "type": "string",
+                  "example": "expenses"
                 }
               }
             }
