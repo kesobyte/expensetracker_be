@@ -1,16 +1,16 @@
 @Library('jenkins-common')_
 
 node("projecdep"){
-    stage('Load credentials') {
-      withCredentials([
+    stage('Load credentials'){
+        withCredentials([
             string(credentialsId: 'jenkins_token_project_dep', variable: 'telegramNotifyChannelBotApiToken'),
             string(credentialsId: 'jenkins_chat_id_project_dep', variable: 'telegramNotifyChannelChatId'),
             string(credentialsId: 'api_token_to_hosting', variable: 'authHostingToken'),
             string(credentialsId: 'id_domain_goit_study', variable: 'domainId'),
-            string(credentialsId: 'ip_front_projects_server', variable: 'serverIP'),
+            string(credentialsId: 'ip_back_project_server', variable: 'serverIP'),
             
             //ssh credentials to front server stud projects
-            string(credentialsId: 'ssh_user_host_for_stud_project_front', variable: 'sshUserAndHost')
+            string(credentialsId: 'ssh_user_host_stud_project_back', variable: 'sshUserAndHost')
         ]){
                 //global bild env
                 env.telegramNotifyChannelBotApiToken = telegramNotifyChannelBotApiToken;
@@ -19,6 +19,7 @@ node("projecdep"){
                 env.authHostingToken = authHostingToken;
                 env.domainId = domainId;
                 env.ipStudServer = serverIP;
+                env.vautUrl = 'https://vault.goit.global';
 
                 //env for github
                 env.branch = 'main';
@@ -26,10 +27,8 @@ node("projecdep"){
                 env.gitUrl = 'git@github.com:goitProjects/expense_tracker_backend.git';
                 
                 env.subdomain = 'expense-tracker.b';
-                env.vaultFolder = 'expense-tracker-b'; 
-                
+                env.vaultFolder = 'expense-tracker-b';        
             }
-        
     }
 
     stage('Setup texts') {
@@ -47,7 +46,6 @@ node("projecdep"){
             env.telegramNotifyChannelChatId,
             env.startBuildText
         );
-
     }
 
     stage('Clone Git Repo') {
@@ -59,111 +57,179 @@ node("projecdep"){
     stage('Copy scripts to project`s folder') {
         catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
           def pwdFolder = pwd();
-          sh "cp /root/scripts/* ${pwdFolder}"
+          sh "cp /root/scriptsBack/* ${pwdFolder}"
         }
-    }    
-    
-    stage('Add A record to domain') {
-        def success = 'SUCCESS'.equals(currentBuild.currentResult);
+    }
 
-        if(success){
+    stage('Add A record to domain') {
+    def success = 'SUCCESS'.equals(currentBuild.currentResult)
+
+    if (success){
         env.fullSubdomain = "${env.subdomain}" + '.goit.study';
-          def curentIp = sh returnStdout: true, script: "ping ${env.fullSubdomain} -c 1 | tr -d \\(\\)  | awk \'NR==1{print \$3}\'"
-          env.curentIp = curentIp.trim();
-          if ("${env.curentIp}" == "${env.ipStudServer}"){
+        def curentIp = sh returnStdout: true, script: "ping ${env.fullSubdomain} -c 1 | tr -d \\(\\)  | awk \'NR==1{print \$3}\'"
+        env.curentIp = curentIp.trim();
+        if ("${env.curentIp}" == "${env.ipStudServer}"){
             echo "subdomain already exists"
-          }else{
+        }else{
             sh "php -e addDomainRecord.php ${env.subdomain} ${env.ipStudServer} ${env.authHostingToken} ${env.domainId}"
-          }
         }
-     }
+    }
+    }   
         
+    stage('Get ENV from vault') {
+    def success = 'SUCCESS'.equals(currentBuild.currentResult)
+
+    if (success) {
+        catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+
+                def getEnvProject = sh returnStdout: true, script: "vault kv get -address=${env.vautUrl} -format=json goitProjects/${env.vaultFolder} | jq -r .data.data"
+                env.getEnvProject = getEnvProject.trim();
+ 
+                //get projectPort
+                def getProjectPort = sh returnStdout: true, script: "vault kv get -address=${env.vautUrl} -format=json goitProjects/${env.vaultFolder} | jq -r .data.data.PORT"
+                env.getProjectPort = getProjectPort.trim();
+            }
+        }
+    }
+
+    stage('Create ENV file'){
+        def success = 'SUCCESS'.equals(currentBuild.currentResult)
+
+        if (success) {
+            catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+                sh "node createEnvFile.cjs \'${env.getEnvProject}\'"
+            }
+        }
+    }
+
     stage('Build'){
         def success = 'SUCCESS'.equals(currentBuild.currentResult);
 
         if (success) {
             catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
-                sh "./build.sh"
+                sh "npm i"
             }
         }
-     }
-    
+    }
+
     stage('Deploy') {
-          def success = 'SUCCESS'.equals(currentBuild.currentResult);
+        def success = 'SUCCESS'.equals(currentBuild.currentResult)
 
-         if (success) {
-             catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+        if (success) {
+            catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
                 //create folder for project
-                def mkdirCmd = "mkdir -p /var/www/${env.fullSubdomain}/html"
+                def mkdirCmd = "mkdir -p /root/${env.vaultFolder}"
                 sh "ssh ${env.sshUserAndHost} ${mkdirCmd}"
-                //sent files to projectFolder
-                sh "scp -r ./${env.buildFolder}/* ${env.sshUserAndHost}:/var/www/${env.fullSubdomain}/html"
-             }
-         }
-     }
+                //deploy to remore folder
+                sh "scp -r ./* ${env.sshUserAndHost}:/root/${env.vaultFolder}"
+                sh "scp .env ${env.sshUserAndHost}:/root/${env.vaultFolder}"
+                 //clear project build folder
+                //sh "rm -rf .[!.]* *"
+            }
+        }
+    }
 
-    stage('Add Apache2 config and SSL'){
-        def success = 'SUCCESS'.equals(currentBuild.currentResult);
+    stage('Create Backend Service files'){
+        def success = 'SUCCESS'.equals(currentBuild.currentResult)
 
-        if(success){
+        if (success){
+          if ("${env.curentIp}" == "${env.ipStudServer}"){
+            echo "Back Services already exists"
+          }else{
+            sh "java createBackService.java ${env.vaultFolder}"
+
+            //Copy service files to /etc/systemd/system
+            def systemdPath = "/etc/systemd/system/";
+            env.systemdPath = systemdPath;
+
+            //copy backService
+            def backService = env.vaultFolder + '.service';
+            env.backService = backService;
+            sh "scp ${env.backService} ${env.sshUserAndHost}:${env.systemdPath}"
+            //enavle backService
+            def enableBackService = "systemctl enable ${env.backService}";
+            env.enableBackService = enableBackService;
+            sh "ssh ${env.sshUserAndHost} ${env.enableBackService}"
+
+            //copy backWatcherService
+            def backWatcherService = env.vaultFolder + '-watcher.service';
+            env.backWatcherService = backWatcherService;
+            sh "scp ${env.backWatcherService} ${env.sshUserAndHost}:${env.systemdPath}"
+            //enavle backWatcherService
+            def enableBackWatcherService = "systemctl enable ${env.backWatcherService}";
+            env.enableBackWatcherService = enableBackWatcherService;
+            sh "ssh ${env.sshUserAndHost} ${env.enableBackWatcherService}"
+
+            //copy backWatcherPath
+            def backWatcherPath = env.vaultFolder + '-watcher.path';
+            env.backWatcherPath = backWatcherPath;
+            sh "scp ${env.backWatcherPath} ${env.sshUserAndHost}:${env.systemdPath}"
+            //enavle backWatcherPath
+            def enableBackWatcherPath = "systemctl enable ${env.backWatcherPath}";
+            env.enableBackWatcherPath = enableBackWatcherPath;
+            sh "ssh ${env.sshUserAndHost} ${env.enableBackWatcherPath}"
+          }
+        }
+    }
+
+    stage('Add Nginx config'){
+        def success = 'SUCCESS'.equals(currentBuild.currentResult)
+
+        if (success){
         if ("${env.curentIp}" == "${env.ipStudServer}"){
-            echo "Apache config already exists"
+            echo "Nginx config already exists"
           }else{
             //copy file config to the server
-            sleep 60;
-            def apache2Conf = env.fullSubdomain + '.conf';
-            env.apache2Conf = apache2Conf;
-            sh "java createApacheConf.java ${env.fullSubdomain}"
-            sh "scp ${env.apache2Conf} ${env.sshUserAndHost}:/etc/apache2/sites-available/"
+            sleep 30;
+            def nginxConf = env.fullSubdomain + '.conf';
+            env.nginxConf = nginxConf;
+            sh "java createNginxConf.java ${env.fullSubdomain} ${env.getProjectPort}"
+            sh "scp ${env.nginxConf} ${env.sshUserAndHost}:/etc/nginx/conf.d/"
             
-            //check apache2 syntax 
-            def apache2Syntax = "apache2ctl configtest";
-            env.apache2Syntax = apache2Syntax;
-            sh "ssh ${env.sshUserAndHost} ${env.apache2Syntax}"
+            //check nginx syntax 
+            def nginxSyntax = "nginx -t";
+            env.nginxSyntax = nginxSyntax;
+            sh "ssh ${env.sshUserAndHost} ${env.nginxSyntax}"
 
-            //enable apache2 conf file 
-            def apache2EnableSite = "a2ensite ${env.apache2Conf}";
-            env.apache2EnableSite = apache2EnableSite;
-            sh "ssh ${env.sshUserAndHost} ${env.apache2EnableSite}"
-
-            //reload apache2
-            def apache2Reload = "systemctl reload apache2";
-            env.apache2Reload = apache2Reload;
-            sh "ssh ${env.sshUserAndHost} ${env.apache2Reload}"
+            //reload nginx
+            def nginxReload = "nginx -s reload";
+            env.nginxReload = nginxReload;
+            sh "ssh ${env.sshUserAndHost} ${env.nginxReload}"
 
             //create SSL
             sleep 120;
-            def certbotSSL = "certbot --apache -d ${env.fullSubdomain}";
+            def certbotSSL = "certbot --nginx -d ${env.fullSubdomain}";
             env.certbotSSL = certbotSSL;
             sh "ssh ${env.sshUserAndHost} ${env.certbotSSL}"
           }
         }
     }
 
-    stage('Check SSL') {
-         def success = 'SUCCESS'.equals(currentBuild.currentResult);
+    stage('Start backend services'){
+        def success = 'SUCCESS'.equals(currentBuild.currentResult)
 
-         if (success){
-            sleep 30;
-            def urlHttps = 'https://' + "${env.fullSubdomain}";
-            def curlRequest='curl -s -o /dev/null -w "%{http_code}"'
-
-            def response_code = sh returnStdout: true, script: "${curlRequest}  ${urlHttps}"
-            env.response_code = response_code.trim();
-
-            if("${env.response_code}" == '200'){
-                echo "HTTPS connection success"
-            } else {
-                echo "HTTPS connection to ${urlHttps} returned a non-200 status code: ${response_code}"
-                sh "ssh ${env.sshUserAndHost} ${env.certbotSSL}"
+        if (success){
+        if ("${env.curentIp}" == "${env.ipStudServer}"){
+            echo "Backend services already running"
+          }else{
+            def backendServices = [
+                    "${env.backService}",
+                    "${env.backWatcherService}",
+                    "${env.backWatcherPath}"
+                ];
+            for(backendService in backendServices){
+                def startService = "systemctl start ${backendService}";
+                env.startService = startService;
+                sh "ssh ${env.sshUserAndHost} ${env.startService}"
             }
-         }
+          }
+        }
     }
 
     stage('Clear project folder'){
-        def success = 'SUCCESS'.equals(currentBuild.currentResult);
+        def success = 'SUCCESS'.equals(currentBuild.currentResult)
 
-        if(success){
+        if (success){
         //clear project build folder
         sh "rm -rf .[!.]* *"
         }
@@ -198,4 +264,5 @@ node("projecdep"){
         )
         
     }
+
 }
