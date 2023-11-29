@@ -1,11 +1,17 @@
 const Joi = require("joi");
 const { transactionSchema: constants, regex } = require("../../constants");
+const validateDate = require("../../helpers/validateDate");
 
 const transactionCreatingSchema = Joi.object({
   type: Joi.string()
     .valid(...Object.values(constants.TRANSACTION_TYPE))
     .required(),
-  date: Joi.string().pattern(regex.DATE_REGEX).required(),
+  date: Joi.any()
+    .custom((value, helpers) => {
+      if (validateDate(value)) return value;
+      return helpers.error("any.custom", { message: "Invalid date" });
+    })
+    .required(),
   time: Joi.string().pattern(regex.TIME_REGEX).required(),
   category: Joi.string().required(),
   sum: Joi.number()
@@ -18,7 +24,10 @@ const transactionCreatingSchema = Joi.object({
 });
 
 const transactionUpdatingSchema = Joi.object({
-  date: Joi.string().pattern(regex.DATE_REGEX),
+  date: Joi.any().custom((value, helpers) => {
+    if (validateDate(value)) return value;
+    return helpers.error("any.custom", { message: "Invalid date" });
+  }),
   time: Joi.string().pattern(regex.TIME_REGEX),
   category: Joi.string(),
   sum: Joi.number()
