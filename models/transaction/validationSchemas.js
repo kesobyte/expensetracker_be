@@ -14,8 +14,7 @@ const transactionCreatingSchema = Joi.object({
     .required(),
   comment: Joi.string()
     .min(constants.TRANSACTION_COMMENT_LENGTH.MIN)
-    .max(constants.TRANSACTION_COMMENT_LENGTH.MAX)
-    .required(),
+    .max(constants.TRANSACTION_COMMENT_LENGTH.MAX),
 });
 
 const transactionUpdatingSchema = Joi.object({
