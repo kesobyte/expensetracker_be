@@ -9,6 +9,7 @@ const getUserAccessToEntity = require("./getUserAccessToEntity");
 const createRouter = require("./createRouter");
 const separatesCategoriesByType = require("./separatesCategoriesByType");
 const getTransactionsTotal = require("./getTransactionsTotal");
+const validateDate = require("./validateDate");
 
 module.exports = {
   createError,
@@ -23,4 +24,5 @@ module.exports = {
   createRouter,
   separatesCategoriesByType,
   getTransactionsTotal,
+  validateDate,
 };
