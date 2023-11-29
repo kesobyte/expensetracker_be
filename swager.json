@@ -1240,8 +1240,7 @@
           "date",
           "time",
           "category",
-          "sum",
-          "comment"
+          "sum"
         ],
         "$ref": "#/components/examples/TransactionRequestSchema"
       },

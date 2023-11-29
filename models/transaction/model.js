@@ -10,7 +10,6 @@ const transactionSchema = new Schema(
     },
     date: {
       type: String,
-      match: regex.DATE_REGEX,
       required: true,
     },
     time: {

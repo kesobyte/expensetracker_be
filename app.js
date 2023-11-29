@@ -10,8 +10,6 @@ const {
   transactionsRouter,
 } = require("./routes/api");
 
-// console.log("swaggerDocument :>> ", typeof swaggerDocument);
-
 const app = express();
 
 const loggerFormat = app.get("env") === "development" ? "dev" : "short";
@@ -25,6 +23,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/categories", categoriesRouter);
 app.use("/api/transactions", transactionsRouter);
+// app.use("/test/", require("./testRouter")); // for start testRouter
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
