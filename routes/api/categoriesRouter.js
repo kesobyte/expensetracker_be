@@ -3,6 +3,7 @@ const {
   authorization,
   validateCategory,
   userAccessToEntity,
+  checkCategoryRemoving,
 } = require("../../middlewares");
 const { categories: c } = require("../../controllers");
 const { Category } = require("../../models");
@@ -35,7 +36,7 @@ const categoriesRouter = createRouter({
       route: "/:id",
       method: "delete",
       controller: c.removeCategory,
-      middlewares: [userAccessToEntity(Category, "Category")],
+      middlewares: [userAccessToEntity(Category, "Category"), checkCategoryRemoving],
     },
   ],
 });

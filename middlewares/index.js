@@ -5,6 +5,7 @@ const validateTransaction = require("./validation/validateTransaction");
 const authorization = require("./authorization");
 const { upload } = require("./multerUpload");
 const userAccessToEntity = require("./userAccessToEntity");
+const checkCategoryRemoving = require("./checkCategoryRemoving");
 
 module.exports = {
   validateAuth,
@@ -14,4 +15,5 @@ module.exports = {
   authorization,
   upload,
   userAccessToEntity,
+  checkCategoryRemoving,
 };

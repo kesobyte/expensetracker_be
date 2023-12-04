@@ -6,7 +6,7 @@ module.exports.removeCategory = async (req, res, next) => {
       params: { id },
     } = req;
     await s.removeCategory(id);
-    res.json().status(204);
+    res.status(204).json();
   } catch (error) {
     next(error);
   }
