@@ -611,6 +611,10 @@
           "404": {
             "description": "Invalid user / Invalid session / Category not found",
             "content": {}
+          },
+          "409": {
+            "description": "Can`t remove! Some transactions depend on this category",
+            "content": {}
           }
         }
       }
